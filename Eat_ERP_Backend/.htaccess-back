@@ -1,0 +1,13 @@
+# Redirect traffic to your port 5000
+DirectoryIndex disabled
+RewriteEngine On
+RewriteBase /
+RewriteRule ^(.*)?$ http://localhost:5000/$1 [P,L]
+RewriteRule ^index\.html$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-l
+RewriteRule /erp/* /erp/index.html [L]
+RewriteCond %{REQUEST_URI}  ^/socket.io [NC]
+RewriteCond %{QUERY_STRING} transport=websocket [NC]
+RewriteRule /(.*) ws://localhost:5000/$1 [P,L]

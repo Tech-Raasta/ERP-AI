@@ -1,0 +1,138 @@
+table.table {
+    color: #000;
+    vertical-align: top;
+}
+
+/* table.table p {
+    font-weight: 300;
+} */
+
+table.table tr:last-child {
+    border-bottom: 1px solid #333;
+    vertical-align: top;
+}
+
+/* table.table td:not(:last-child) {
+    border-right: 1px solid #333;
+} */
+
+table.table td {
+    border-left: 1px solid #333;
+    border-top: 1px solid #333;
+}
+
+table.table td:last-child {
+    border-right: 1px solid #333;
+}
+table.table td {
+    padding: 7px 10px;
+    vertical-align: top;
+    margin: 0;
+}
+
+table.table.viewFinance {
+    width: 100%;
+}
+
+#financePrint {
+    width: 1200px;
+}
+
+#tablePurchase {
+    width: 100%;
+}
+
+#mainPurchase {
+    width: 1200px;
+}
+
+.pdfPageWidth {
+    width: 100%;
+}
+
+.pdfPageWidth canvas.react-pdf__Page__canvas {
+    width: 100% !important;
+    height: auto !important;
+}
+
+@media (max-width: 900px) {
+    #mainPurchase,
+    #financePrint,
+    #tablePurchase,
+    #tableGRN {
+        width: 100%;
+    }
+}
+
+#documents {
+    width: 100%;
+}
+
+@media print {
+    @page {
+        size: a4 portrait;
+        margin-top: 40px;
+        margin-bottom: 40px;
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+    table.table.viewFinance {
+        /* width: 100%; */
+        font-size: 17px;
+    }
+    #financePrint,
+    #mainPurchase,
+    .pdfPageWidth {
+        /* transform: scale(1); */
+        width: 1200px;
+        zoom: 85%;
+    }
+    .pdfPageWidth {
+        /* zoom: 90%; */
+        width: 1300px;
+    }
+    .page-break #tablePurchase {
+        font-size: 16px;
+    }
+
+    /* table.table.viewFinance {
+        zoom: 0;
+    } */
+    .page-break {
+        display: block;
+        page-break-after: always;
+    }
+
+    /* .page-break:last-child {
+        display: none;
+        page-break-after: unset;
+    } */
+
+    #actionButtons,
+    .pdfPrint {
+        display: none;
+    }
+    /* #documents {
+        width: 1000px;
+    } */
+}
+
+table.table.viewFinance td {
+    padding: 5px 10px;
+    vertical-align: top;
+    margin: 0;
+}
+
+.checkbox-label span {
+    line-height: 20px;
+}
+
+table.table p {
+    padding-top: -5px;
+}
+
+/* @media print {
+    @page {
+        size: portrait;
+    }
+} */

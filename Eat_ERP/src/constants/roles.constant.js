@@ -1,0 +1,5 @@
+export const ADMIN = 'admin'
+export const USER = 'user'
+export const NORMAL = 'normal'
+export const PRODUCTION = 'production'
+export const FINANCE = 'finance'

@@ -1,0 +1,218 @@
+import { DataTypes, Op } from 'sequelize';
+import sequelize from '../lib/database.js';
+import { calculateItemAmount, round } from '../lib/common.js';
+import Product from './product.js';
+import Box from './box.js';
+import ComboBox from './comboBox.js';
+
+const SaleReturnItemProduct = sequelize.define('distributor_in_items', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    allowNull: false,
+    primaryKey: true
+  },
+  distributor_in_id: {
+    type: DataTypes.INTEGER,
+    // allowNull: false,
+    // validate: {
+    //   notNull: true
+    // }
+  },
+  type: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notNull: true
+    }
+  },
+  item_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    validate: {
+      notNull: true
+    }
+  },
+  qty: {
+    type: DataTypes.DOUBLE,
+    allowNull: false,
+    validate: {
+      notNull: true
+    }
+  },
+  sell_rate: {
+    type: DataTypes.DOUBLE,
+    allowNull: false,
+    validate: {
+      notNull: true
+    }
+  },
+  grams: DataTypes.DOUBLE,
+  rate: {
+    type: DataTypes.DOUBLE,
+    // allowNull: false,
+    // validate: {
+    //   notNull: true
+    // }
+  },
+  amount: DataTypes.DOUBLE,
+  cost_rate: DataTypes.DOUBLE,
+  cost_amount: DataTypes.DOUBLE,
+  cgst_amt: DataTypes.DOUBLE,
+  sgst_amt: DataTypes.DOUBLE,
+  igst_amt: DataTypes.DOUBLE,
+  tax_amt: DataTypes.DOUBLE,
+  total_amt: DataTypes.DOUBLE,
+  batch_no: DataTypes.STRING,
+  batch_qty: DataTypes.STRING,
+  margin_per: DataTypes.DOUBLE,
+  tax_percentage: DataTypes.DOUBLE,
+  promo_margin: DataTypes.DOUBLE,
+  combo_box_id: DataTypes.INTEGER,
+  discount: {
+    type: DataTypes.DOUBLE,
+    // allowNull: false
+    defaultValue: 0
+  },
+  discount_amt: {
+    type: DataTypes.DOUBLE,
+    // allowNull: false
+    defaultValue: 0
+  },
+  tax_type: {
+    type: DataTypes.STRING,
+    defaultValue: 'Intra'
+  }
+}, 
+{ 
+  timestamps: false,
+  freezeTableName: true
+});
+
+// SaleReturnItem.belongsTo(Product, {foreignKey: 'item_id', as: 'product'});
+
+// (async () => {
+//   await SaleReturnItemProduct.sync({ alter: true });
+//   console.log('The table for the Sale Item model was just (re)created!');
+//   // Code here
+// })();
+
+SaleReturnItemProduct.prototype.getRequestData = function(saleReturnItemProduct) {
+  // try {
+    // this.distributor_in_id = saleReturnItemProduct.distributor_in_id;
+    this.type = saleReturnItemProduct.type;
+    this.item_id = saleReturnItemProduct.item_id;
+    this.grams = saleReturnItemProduct.grams;
+    this.qty = saleReturnItemProduct.qty;
+    this.rate = saleReturnItemProduct.rate;
+    this.discount = saleReturnItemProduct.discount;
+    this.sell_rate = saleReturnItemProduct.sell_rate;
+    this.tax_percentage = saleReturnItemProduct.tax_percentage;
+    this.amount = saleReturnItemProduct.amount;
+    this.cgst_amt = saleReturnItemProduct.cgst_amt;
+    this.sgst_amt = saleReturnItemProduct.sgst_amt;
+    this.igst_amt = saleReturnItemProduct.igst_amt;
+    this.tax_amt = saleReturnItemProduct.tax_amt;
+    this.total_amt = saleReturnItemProduct.total_amt;
+    this.batch_no = saleReturnItemProduct.batch_no;
+    this.batch_qty = saleReturnItemProduct.batch_qty;
+    this.margin_per = saleReturnItemProduct.margin_per;
+    this.promo_margin = saleReturnItemProduct.promo_margin;
+    this.combo_box_id = saleReturnItemProduct.combo_box_id;
+    this.discount_amt = saleReturnItemProduct.discount_amt;
+    this.tax_type = saleReturnItemProduct.tax_type;
+  // } catch (error) {
+  //   return error;
+  // }
+}
+
+SaleReturnItemProduct.prototype.setItemAmount = async function() {
+  // try {
+    this.cost_rate = 0;
+
+    if (this.type.trim().toUpperCase() === 'BAR') {
+      const product = await Product.findByPk(this.item_id);
+      if (product) {
+        this.cost_rate = product.cost ? product.cost : 0;
+      }
+    } else if (this.type.trim().toUpperCase() === 'BOX') {
+      const box = await Box.findByPk(this.item_id);
+      if (box) {
+        this.cost_rate = box.cost ? box.cost : 0;
+      }
+    } else if (this.type.trim().toUpperCase() === 'COMBO BOX') {
+      const comboBox = await ComboBox.findByPk(this.item_id);
+      if (comboBox) {
+        this.cost_rate = comboBox.cost ? comboBox.cost : 0;
+      }
+    }
+
+    // const product = await Product.findByPk(this.item_id, {include: 'category'});
+    // if(product) {
+    //   this.productName = product.productName;
+    //   this.shortName = product.shortName;
+    //   this.type = product.type;
+    //   this.categoryId = product.categoryId;
+    //   this.categoryName = ((product.category && product.category.categoryName) ? product.category.categoryName : '');
+    //   this.grams = product.grams;
+    //   this.rate = product.rate;
+    //   this.grams = product.grams;
+    //   this.tax_percentage = product.tax_percentage;
+    //   this.costWithoutGst = product.costWithoutGst;
+    //   this.costWithGst = product.costWithGst;
+    // }
+
+    // this.totalGrams = round(this.qty * this.grams, 4);
+    // this.totalCostWithoutGst = round(this.qty * this.costWithoutGst, 4);
+    // this.totalCostWithGst = round(this.qty * this.costWithGst, 4);
+
+    const qty = this.qty ? this.qty : 0;
+    const rate  = this.rate ? this.rate : 0;
+    const tax_percentage  = this.tax_percentage ? this.tax_percentage : 0;
+    const tax_type  = this.tax_type ? this.tax_type : 'Intra';
+    const discount  = this.discount ? this.discount : 0;
+    let sell_rate = this.sell_rate ? this.sell_rate : 0;
+    
+    const discoutRate = (rate * discount)/100;
+
+    sell_rate = rate - discoutRate;
+    sell_rate = round((sell_rate / (100 + tax_percentage)) * 100, 4);
+    
+    const item = calculateItemAmount(qty, sell_rate, tax_percentage, tax_type);
+
+    this.sell_rate = sell_rate;
+    this.amount = item.amount;
+    this.discount_amt = round(qty * discoutRate, 2);
+    // this.taxableAmount = item.amount;
+    // this.cgst = item.cgst;
+    // this.sgst = item.sgst;
+    // this.igst = item.igst;
+    this.cgst_amt = item.cgst_amt;
+    this.sgst_amt = item.sgst_amt;
+    this.igst_amt = item.igst_amt;
+    this.tax_amt = item.tax_amt;
+    this.total_amt = item.total_amt;
+  // } catch (error) {
+  //   return error;
+  // }
+}
+
+SaleReturnItemProduct.prototype.validateData = async function() {
+  // try {
+    const error = await this.validate().then(() => null, error => error);
+    if (error) {
+      return error;
+    }
+
+    // let count = await Product.count({ where: { id: this.item_id } });
+    // if (count === 0) {
+    //   return { errors : { productName: { message: `Product (${this.productName}) does not found` } } }
+    // }
+    
+    return null;
+  // } catch (error) {
+  //   return error;
+  // }
+}
+
+export default SaleReturnItemProduct;

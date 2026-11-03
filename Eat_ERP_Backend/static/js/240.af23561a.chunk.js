@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkEATERP=self.webpackChunkEATERP||[]).push([[240],{2240:(s,e,a)=>{a.r(e),a.d(e,{default:()=>u});a(72791);var l=a(44967),c=a(64443),h=a(80184);const u=s=>(0,h.jsxs)("div",{className:"app-layout-blank flex flex-auto flex-col h-[100vh]",children:[(0,h.jsx)(l.Z,{...s}),(0,h.jsx)(c.Z,{className:"hidden"})]})}}]);
+//# sourceMappingURL=240.af23561a.chunk.js.map

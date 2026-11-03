@@ -1,0 +1,17 @@
+.dialog-content {
+    overflow-y: auto;
+}
+
+.insert_item_box table.table-compact {
+    display: block;
+    /* width: 100%; */
+    height: 400px;
+    overflow-y: auto;
+}
+
+.allocation_box table.table-compact {
+    display: block;
+    /* width: 100%; */
+    height: 350px;
+    overflow-y: auto;
+}
